@@ -57,23 +57,20 @@ class TranslateViewModel @Inject constructor(
         val translateUiModel = (_uiState.value as? UiState.DataLoaded)?.data ?: return
 
         //TODO: add auto detect support
-        if(translateUiModel.sourceLanguage == autoDetect) return
+        if (translateUiModel.sourceLanguage == autoDetect) return
 
         viewModelScope.launch {
-            runCatching { translateRepo.translateText(
-                text = translateUiModel.text,
-                sourceLanguage = translateUiModel.sourceLanguage,
-                targetLanguage = translateUiModel.targetLanguage
-            ) }
+            runCatching {
+                translateRepo.translateText(
+                    text = translateUiModel.text,
+                    sourceLanguage = translateUiModel.sourceLanguage,
+                    targetLanguage = translateUiModel.targetLanguage
+                )
+            }
                 .onSuccess {
-                    val translateUiModel = (_uiState.value as? UiState.DataLoaded)?.data?.copy(
-                        languages = it
-                    ) ?: TranslateUiModel(
-                        languages = it,
-                        targetLanguage = it.first()
-                    )
-
-                    _uiState.value = translateUiModel.toDataLoaded()
+                    _uiState.value = translateUiModel.copy(
+                        translatedText = it.text
+                    ).toDataLoaded()
                 }
                 .onFailure { _uiState.value = it.toError() }
         }

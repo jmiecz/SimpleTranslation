@@ -58,6 +58,7 @@ class TranslateViewModel @Inject constructor(
 
         //TODO: add auto detect support
         if (translateUiModel.sourceLanguage == autoDetect) return
+        if (translateUiModel.text.isBlank()) return
 
         viewModelScope.launch {
             runCatching {
@@ -81,6 +82,8 @@ class TranslateViewModel @Inject constructor(
             _uiState.value = it.copy(
                 sourceLanguage = language,
             ).toDataLoaded()
+
+            onSearch()
         }
     }
 
@@ -89,6 +92,8 @@ class TranslateViewModel @Inject constructor(
             _uiState.value = it.copy(
                 targetLanguage = language
             ).toDataLoaded()
+
+            onSearch()
         }
     }
 
@@ -96,7 +101,9 @@ class TranslateViewModel @Inject constructor(
         (_uiState.value as? UiState.DataLoaded)?.data?.let {
             _uiState.value = it.copy(
                 sourceLanguage = it.targetLanguage,
-                targetLanguage = it.sourceLanguage
+                targetLanguage = it.sourceLanguage,
+                text = it.translatedText,
+                translatedText = it.text
             ).toDataLoaded()
         }
     }

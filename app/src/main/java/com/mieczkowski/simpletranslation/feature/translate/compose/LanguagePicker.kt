@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -46,7 +47,6 @@ fun LanguagePicker(
             Column(
                 modifier = Modifier
                     .padding(vertical = 16.dp)
-                    .verticalScroll(rememberScrollState())
             ) {
                 Text(
                     text = stringResource(R.string.select_a_language),
@@ -55,26 +55,31 @@ fun LanguagePicker(
                 )
                 Spacer(modifier = Modifier.size(8.dp))
 
-                languages.forEachIndexed { index, language ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .clickable { onLanguagePick(language) },
-                    ) {
-                        Text(
-                            text = language.name,
-                            modifier = Modifier.align(Alignment.CenterStart)
-                        )
+                Column(
+                    modifier = Modifier
+                        .height(400.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    languages.forEachIndexed { index, language ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .clickable { onLanguagePick(language) },
+                        ) {
+                            Text(
+                                text = language.name,
+                                modifier = Modifier.align(Alignment.CenterStart)
+                            )
 
-                        if (language == currentLanguage) Icon(
-                            painter = painterResource(id = R.drawable.baseline_check_24),
-                            contentDescription = stringResource(R.string.language_selected),
-                            modifier = Modifier.align(Alignment.CenterEnd)
-                        )
+                            if (language == currentLanguage) Icon(
+                                painter = painterResource(id = R.drawable.baseline_check_24),
+                                contentDescription = stringResource(R.string.language_selected),
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            )
+                        }
+                        if (index != languages.lastIndex) Divider()
                     }
-
-                    if (index != languages.lastIndex) Divider()
                 }
 
                 Button(
